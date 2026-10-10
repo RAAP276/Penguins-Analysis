@@ -1,0 +1,35 @@
+# --- LaTeX build artifacts ---------------------------------------------------
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.bbl
+*.blg
+*.run.xml
+*.bcf
+
+# --- Python ------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# --- Project artifacts -------------------------------------------------------
+artifacts/
+*.csv
+
+# --- Editors -----------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store
