@@ -1,0 +1,43 @@
+% sections/04_regression.tex
+\section{Regression}
+\label{sec:regression}
+
+Regression is the task of predicting a continuous numerical value from a set of predictors. In this study the target is the body mass of the penguin, and the predictors are the other physical traits together with the species. Two models are compared, linear regression and a random forest. As in the classification study, each model is trained under two feature configurations, one using only physical traits and one adding sex, and both configurations are trained on the two disjoint training subsets that share the same test set. The design of those subsets is covered in Section~\ref{sec:robustness}.
+
+The target variable is \texttt{body\_mass\_g}. The features are species, bill length, bill depth, flipper length and, in the second configuration, sex. Species is included as a predictor because it acts as a proxy for body size: Gentoo penguins are systematically larger than Chinstrap and Adelie, so the species label carries information about the target. All continuous features were previously rescaled to the [0, 1] range with MinMaxScaler, so the target and the error metrics are expressed in those normalized units, not in grams.
+
+\subsection{Linear Regression}
+
+Linear regression models the target as a linear combination of the predictors plus an intercept term. The coefficients are estimated by ordinary least squares, which minimizes the sum of squared residuals. The model is simple, fast, and easy to interpret, since each coefficient measures the change in the target associated with a unit change in one predictor while the others are held constant. Its main limitation is that it cannot capture non-linear relations or interactions between predictors unless those are added manually.
+
+On the shared test set, linear regression with sex as a predictor reaches an R\textsuperscript{2} of 0.786 and an RMSE of 0.100 when trained on subset B. The R\textsuperscript{2} indicates that the model explains about 79 \% of the variance of the target in normalized units.
+
+\subsection{Random Forest}
+
+A random forest is an ensemble of decision trees. Each tree is trained on a bootstrap sample of the training data, and at each split only a random subset of the features is considered. The final prediction is the average of the individual tree predictions. This combination reduces the variance of a single tree and captures non-linear relations without requiring the user to specify them. The trade-off is that the model is harder to interpret than a single tree or a linear model, and training time grows with the number of trees.
+
+On the same test set, the random forest with sex reaches an R\textsuperscript{2} of 0.841 and an RMSE of 0.086 when trained on subset B. It improves on linear regression on every metric, which is consistent with the presence of non-linear effects between body mass and the predictors.
+
+\subsection{Effect of Sex on Regression}
+
+Table~\ref{tab:reg_metrics} reports the range of R\textsuperscript{2} and RMSE across the two training subsets for each configuration and model.
+
+\begin{table}[htbp]
+	\centering
+	\caption{Regression metrics on the shared test set. Ranges indicate the variation across the two disjoint training subsets.}
+	\label{tab:reg_metrics}
+	\begin{tabular}{lll}
+		\toprule
+		Model & R\textsuperscript{2} & RMSE \\
+		\midrule
+		Linear regression (without sex) & 0.711 to 0.712 & 0.116 to 0.117 \\
+		Linear regression (with sex)    & 0.770 to 0.786 & 0.100 to 0.104 \\
+		Random forest (without sex)     & 0.756 to 0.793 & 0.099 to 0.107 \\
+		Random forest (with sex)        & 0.806 to 0.841 & 0.086 to 0.096 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+Adding sex improves both models on both training subsets. For linear regression the gain in R\textsuperscript{2} is between 0.058 and 0.075, and for the random forest it is between 0.048 and 0.050. The direction of the change is the same in all four runs, which is a stronger signal than in classification, where the decision tree showed no effect at all. The consistency makes sense from the modeling side: males and females differ systematically in body mass, so a variable that identifies sex provides information the physical traits cannot fully capture on their own.
+
+Section~\ref{sec:robustness} compares the two training subsets side by side and discusses how much of this gain can be attributed to the specific rows used in each run.

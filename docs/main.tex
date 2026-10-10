@@ -1,0 +1,73 @@
+% ============================================================================
+%  main.tex --- Analysis of the "penguins" dataset
+%
+%  Encoding convention: accented characters are written with escape
+%  sequences (e.g. \'a, \~n, \"u) so the source file is portable across
+%  editors and does not depend on the file encoding.
+% ============================================================================
+
+\documentclass[11pt, a4paper]{article}
+
+% --- Encoding and language --------------------------------------------------
+% inputenc is omitted: modern LaTeX distributions default to UTF-8 and the
+% escape sequences used for accents compile regardless of the file encoding.
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+
+% --- Page layout ------------------------------------------------------------
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Analysis of the \texttt{penguins} dataset}
+\fancyhead[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- Math -------------------------------------------------------------------
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% --- Graphics and tables ----------------------------------------------------
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\graphicspath{{images/}}
+
+% --- Hyperlinks -------------------------------------------------------------
+\usepackage[hidelinks]{hyperref}
+
+% --- Abstract environment ---------------------------------------------------
+% Redefines the default abstract to a compact centered block that also
+% appears in the table of contents.
+\renewenvironment{abstract}
+{\clearpage\small\begin{center}\bfseries Abstract\end{center}\quotation}
+{\endquotation\clearpage}
+
+% --- Report metadata --------------------------------------------------------
+\newcommand{\reportTitle}{Analysis of the ``penguins'' Dataset}
+\newcommand{\reportSubtitle}{The Contribution of Sex over Physical Traits}
+\newcommand{\reportAuthor}{Rub\'en Arellano}
+\newcommand{\reportDate}{2025}
+\newcommand{\reportRepo}{\url{https://github.com/RAAP276/Penguins-Analysis}}
+
+% ============================================================================
+\begin{document}
+	
+	\input{sections/title}
+	
+	\input{sections/abstract}
+	
+	\clearpage
+	\tableofcontents
+	\clearpage
+	
+	\input{sections/01_introduction}
+	\input{sections/02_data_loading}
+	\input{sections/03_classification}
+	\input{sections/04_regression}
+	\input{sections/05_robustness}
+	\input{sections/06_hyperparameter_tuning}
+	\input{sections/07_conclusion}
+	
+\end{document}

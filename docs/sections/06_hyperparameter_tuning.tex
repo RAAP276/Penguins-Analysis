@@ -1,0 +1,35 @@
+% sections/06_hyperparameter_tuning.tex
+\section{Hyperparameter Optimization}
+\label{sec:hyperparameter_tuning}
+
+The decision tree in Section~\ref{sec:classification} was trained with the default parameters of \texttt{scikit-learn}, which means it grows until every leaf is pure or contains fewer samples than the minimum split size. On small datasets this behavior can lead to trees that fit the training data very closely and generalize poorly. Hyperparameter optimization is the process of searching for the combination of parameters that controls this growth and maximizes performance on unseen data.
+
+The search was performed with \texttt{GridSearchCV} from \texttt{scikit-learn}. This method evaluates every combination of the values provided in a parameter grid using cross-validation on the training set and returns the combination with the best average score. Three parameters were explored.
+
+\begin{itemize}
+	\item \texttt{max\_depth}: the maximum depth of the tree. \texttt{None} allows nodes to expand until all leaves are pure or fall below \texttt{min\_samples\_split}. The values 5, 10 and 15 cap the depth and force the tree to stop earlier, which helps control overfitting.
+	\item \texttt{min\_samples\_split}: the minimum number of samples required to split an internal node. Higher values prevent the tree from creating very small branches that only fit noise. The values explored were 2, 5 and 10.
+	\item \texttt{min\_samples\_leaf}: the minimum number of samples allowed in a leaf node. Higher values force leaves to represent broader groups of samples. The values explored were 1, 2 and 4.
+\end{itemize}
+
+For each combination, a fresh \texttt{DecisionTreeClassifier} was trained and evaluated with 5-fold cross-validation on the training set. The metric used to select the best combination was accuracy. The search was run independently for each of the four branches of the study, that is, for each feature configuration (with and without sex) and each training subset (A and B).
+
+\begin{table}[htbp]
+	\centering
+	\caption{Best hyperparameters selected by GridSearchCV for each branch.}
+	\label{tab:tuning}
+	\begin{tabular}{lllll}
+		\toprule
+		Configuration & Subset & \texttt{max\_depth} & \texttt{min\_samples\_split} & \texttt{min\_samples\_leaf} \\
+		\midrule
+		Without sex & train\_A & None & 2 & 1 \\
+		Without sex & train\_B & None & 2 & 1 \\
+		With sex    & train\_A & None & 2 & 1 \\
+		With sex    & train\_B & None & 2 & 1 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+The same combination was selected in all four branches: \texttt{max\_depth=None}, \texttt{min\_samples\_split=2} and \texttt{min\_samples\_leaf=1}, which is exactly the default configuration of the classifier. This means that restricting the tree did not improve cross-validated accuracy on this dataset, and the unconstrained tree was already the best option under the metric used. The result is consistent with the fact that the penguins dataset is strongly separable: the tree does not need to overfit to achieve high accuracy, and its natural splits along physical traits already capture the structure of the classes.
+
+Accuracy was chosen as the selection metric because the three species are roughly balanced after cleaning, so the metric does not hide poor performance on any single species. This is consistent with the per-class counts in the confusion matrices of Section~\ref{sec:classification}.

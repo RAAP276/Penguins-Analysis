@@ -1,0 +1,19 @@
+% sections/02_data_loading.tex
+\section{Data Selection, Loading and Preprocessing}
+\label{sec:data_loading}
+
+Every supervised model depends on the data it is trained on. Before fitting anything, the dataset has to be selected, loaded and cleaned so that the predictors and the target are in a form the algorithms can consume. This section describes those steps: where the data come from, how missing values are handled, how categorical attributes are encoded and how the continuous traits are rescaled.
+
+\subsection{Data selection and loading}
+
+The dataset used in this report is the \texttt{penguins} DataFrame distributed with the \texttt{seaborn} library. It is loaded directly from the library, so no external file is downloaded or read from disk. The frame has 344 rows and 7 columns: the categorical target \texttt{species}, the categorical attribute \texttt{island}, four continuous physical traits (bill length, bill depth, flipper length and body mass) and the categorical attribute \texttt{sex}.
+
+\subsection{Preprocessing}
+
+The dataset is first inspected to count how many rows contain at least one missing value. There are 11 such rows out of 344, which is 3.2 \% of the data. That fraction is small enough to be discarded without meaningfully reducing the sample, so the rows are removed and the remaining 333 are kept.
+
+The two categorical columns used by the models, \texttt{species} and \texttt{sex}, are then encoded as integers. Species are mapped to 1, 2 and 3 in the order Adelie, Chinstrap, Gentoo. Sex is mapped to 0 for males and 1 for females. Integer encoding is preferred over one-hot vectors to keep the feature representation compact and reduce the amount of input the models have to process.
+
+The column \texttt{island} is not used. The study predicts species from physical traits of the individual, and island is not a physical trait. It is an environmental attribute that correlates strongly with species, so including it would leak information about the target.
+
+The last step is to rescale the four continuous physical traits to the [0, 1] range using \texttt{MinMaxScaler}. Only those four columns are rescaled. Species and sex are labels, not magnitudes, so scaling them would be meaningless. The scaler is fitted once on the full cleaned frame and reused in every configuration of the study.
